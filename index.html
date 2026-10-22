@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#03090d">
+  <meta name="description" content="打开就能玩的引擎声场。选择 V6、V8、V10 或 V12，一键点火，按住油门感受声浪。无需账号。">
+  <title>TSL — 引擎声场</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<!-- THESIS: A panoramic, playable instrument display based on the user's photographed AMG GT Black Series cluster.
+OWN-WORLD: Cyan perspective mesh and sculpted display wings; ivory italic numerals, an orange perimeter, red needle and a metallic cyan tachometer. TSL remains the original brand.
+FIRST VIEWPORT: The wide display is the surface: left mileage display, central 0–8/9 tachometer with large live GPS km/h and a recessed cyan light road, right live calendar. Compact RPM and virtual gear remain below; GPS absence is explicit.
+SIGNATURE: Holding the pedal moves the red needle while the mesh illumination rises; sound remains the existing four-preset WASM synthesizer.
+FORM: User-pinned photograph, code-led vector geometry. No decorative vehicle telemetry, copied dashboard screenshot, or invented sensor readings.
+FINISH: Desktop/mobile render, interaction checks, independent finish verdict and updated design records. -->
+<main class="console">
+  <header class="topbar">
+    <a class="wordmark" href="./" aria-label="TSL 引擎声场首页">TSL<span class="wordmark-dot">.</span></a>
+    <div class="topbar-right"><span class="connection"><span id="signal-dot" class="signal-dot"></span><span id="engine-status">引擎待命</span></span><button id="fullscreen" class="icon-button" aria-label="进入全屏" title="全屏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+  </header>
+
+  <section class="instrument" aria-label="引擎仪表">
+    <div class="instrument-top"><h1>引擎声场</h1><div class="mode-switch" role="group" aria-label="声浪控制模式"><button id="manual-mode" class="mode active" aria-pressed="true">手动试听</button><button id="gps-mode" class="mode" aria-pressed="false">GPS 跟随</button></div></div>
+    <div class="cluster">
+      <svg class="cluster-surface" viewBox="0 0 1200 470" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="screen-face" x2="0" y2="1"><stop stop-color="#05212d"/><stop offset=".52" stop-color="#00121c"/><stop offset="1" stop-color="#063444"/></linearGradient>
+          <radialGradient id="horizon-light"><stop stop-color="#34e7ec" stop-opacity=".75"/><stop offset=".4" stop-color="#00b6c6" stop-opacity=".24"/><stop offset="1" stop-color="#00798d" stop-opacity="0"/></radialGradient>
+          <linearGradient id="stage-light" x2="0" y2="1"><stop stop-color="#006a7e" stop-opacity="0"/><stop offset=".7" stop-color="#08bdcb" stop-opacity=".38"/><stop offset="1" stop-color="#2de3e7" stop-opacity=".6"/></linearGradient>
+          <linearGradient id="trim-light"><stop stop-color="#ac5d0b"/><stop offset=".45" stop-color="#ffce48"/><stop offset=".65" stop-color="#ffb51f"/><stop offset="1" stop-color="#c67515"/></linearGradient>
+          <pattern id="mesh-dots" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#55dce3"/></pattern>
+          <clipPath id="display-clip"><path d="M26 163Q26 55 146 48H1054Q1174 55 1174 163V336Q1174 407 1078 420H887Q867 420 848 402L810 374H390L352 402Q333 420 313 420H122Q26 407 26 336Z"/></clipPath>
+        </defs>
+        <g clip-path="url(#display-clip)">
+          <path d="M0 0H1200V440H0Z" fill="url(#screen-face)"/>
+          <ellipse cx="600" cy="300" rx="670" ry="156" fill="url(#horizon-light)"/>
+          <path d="M-20 262H1220" stroke="#1ba7b7" stroke-opacity=".35"/>
+          <g class="mesh-field" fill="none" stroke="#22afbc" stroke-width=".7"><path d="M600 250 L-600 440"/><path d="M600 250 L-500 440"/><path d="M600 250 L-400 440"/><path d="M600 250 L-300 440"/><path d="M600 250 L-200 440"/><path d="M600 250 L-100 440"/><path d="M600 250 L0 440"/><path d="M600 250 L100 440"/><path d="M600 250 L200 440"/><path d="M600 250 L300 440"/><path d="M600 250 L400 440"/><path d="M600 250 L500 440"/><path d="M600 250 L600 440"/><path d="M600 250 L700 440"/><path d="M600 250 L800 440"/><path d="M600 250 L900 440"/><path d="M600 250 L1000 440"/><path d="M600 250 L1100 440"/><path d="M600 250 L1200 440"/><path d="M600 250 L1300 440"/><path d="M600 250 L1400 440"/><path d="M600 250 L1500 440"/><path d="M600 250 L1600 440"/><path d="M600 250 L1700 440"/><path d="M600 250 L1800 440"/><path d="M-40 268 Q600 304 1240 268"/><path d="M-40 280 Q600 316 1240 280"/><path d="M-40 295 Q600 331 1240 295"/><path d="M-40 314 Q600 350 1240 314"/><path d="M-40 337 Q600 373 1240 337"/><path d="M-40 365 Q600 401 1240 365"/><path d="M-40 400 Q600 436 1240 400"/><path d="M-40 441 Q600 477 1240 441"/></g>
+          <path d="M0 310Q600 196 1200 310V445H0Z" fill="url(#mesh-dots)" opacity=".36"/>
+          <path d="M390 374 506 285H694L810 374Z" fill="url(#stage-light)"/>
+          <path d="M390 374H810" stroke="#9df4ef" stroke-width="2"/>
+        </g>
+        <path d="M26 163Q26 55 146 48H1054Q1174 55 1174 163V336Q1174 407 1078 420H887Q867 420 848 402L810 374H390L352 402Q333 420 313 420H122Q26 407 26 336Z" fill="none" stroke="#152a34" stroke-width="5"/>
+        <path d="M31 352Q40 405 122 416H313Q333 416 352 398L390 370H810L848 398Q867 416 887 416H1078Q1160 405 1169 352" fill="none" stroke="#d75418" stroke-width="4"/>
+        <path d="M31 352Q40 405 122 416H313Q333 416 352 398L390 370H810L848 398Q867 416 887 416H1078Q1160 405 1169 352" fill="none" stroke="url(#trim-light)" stroke-width="1.6"/>
+      </svg>
+      <div class="configuration"><span id="temperature" class="ambient-temperature" title="开启 GPS 跟随并点火后获取当前位置气温" aria-label="当前位置气温未获取">—°C</span><span id="engine-code" class="sr-only">V8</span></div>
+      <time id="cluster-clock" class="cluster-clock">--:--</time>
+      <figure class="trip-panel" aria-label="参考图里程读数">
+        <span class="trip-value">0.0</span>
+        <span class="trip-unit">miles</span>
+        <span class="trip-secondary">209</span>
+      </figure>
+      <div class="dial-shell">
+        <svg class="dial" viewBox="0 0 420 390" aria-hidden="true">
+          <defs>
+            <linearGradient id="metal-ring" x2="0" y2="1"><stop stop-color="#f2ffff"/><stop offset=".25" stop-color="#63cdd7"/><stop offset=".6" stop-color="#064655"/><stop offset="1" stop-color="#072430"/></linearGradient>
+            <radialGradient id="dial-face" cx="50%" cy="40%" r="62%"><stop stop-color="#00141f"/><stop offset=".74" stop-color="#002331"/><stop offset="1" stop-color="#00748a" stop-opacity=".2"/></radialGradient>
+          </defs>
+          <path d="M61.85 305.75A188 188 0 1 1 358.15 305.75" fill="url(#dial-face)" stroke="#ef6b13" stroke-width="5"/>
+          <path d="M61.85 305.75A188 188 0 1 1 358.15 305.75" fill="none" stroke="#ffd94b" stroke-width="1.6"/>
+          <path d="M66.58 302.06A182 182 0 1 1 353.42 302.06" fill="none" stroke="url(#metal-ring)" stroke-width="7"/>
+          <path d="M72.88 297.13A174 174 0 1 1 347.12 297.13" class="dial-rail"/>
+          <path id="rpm-sweep" d="M72.88 297.13A174 174 0 1 1 347.12 297.13" pathLength="1" class="rpm-sweep"/>
+          <path id="redline-arc" class="redline-arc"/>
+          <g id="dial-rays"></g><g class="light-road" aria-hidden="true">
+            <defs>
+              <linearGradient id="road-fill" x2="0" y2="1"><stop stop-color="#031924"/><stop offset=".3" stop-color="#075366"/><stop offset=".72" stop-color="#109eaf"/><stop offset="1" stop-color="#38dce1"/></linearGradient>
+              <linearGradient id="road-edge" x2="0" y2="1"><stop stop-color="#0e586b" stop-opacity="0"/><stop offset="1" stop-color="#b0fbf6"/></linearGradient>
+              <linearGradient id="road-depth" x2="0" y2="1"><stop stop-color="#a3ffff" stop-opacity="0"/><stop offset="1" stop-color="#b8ffff" stop-opacity=".7"/></linearGradient>
+              <clipPath id="road-clip"><path d="M44 307 156 215H264L376 307Z"/></clipPath>
+            </defs>
+            <path d="M44 307 156 215H264L376 307Z" fill="url(#road-fill)"/>
+            <g clip-path="url(#road-clip)" class="road-grid" stroke="url(#road-depth)" fill="none" stroke-width=".6"><path d="M154.16 215 40 307"/><path d="M157.12 215 49 307"/><path d="M160.07 215 58 307"/><path d="M163.03 215 67 307"/><path d="M165.99 215 76 307"/><path d="M168.94 215 85 307"/><path d="M171.90 215 94 307"/><path d="M174.85 215 103 307"/><path d="M177.81 215 112 307"/><path d="M180.77 215 121 307"/><path d="M183.72 215 130 307"/><path d="M186.68 215 139 307"/><path d="M189.64 215 148 307"/><path d="M192.59 215 157 307"/><path d="M195.55 215 166 307"/><path d="M198.50 215 175 307"/><path d="M201.46 215 184 307"/><path d="M204.42 215 193 307"/><path d="M207.37 215 202 307"/><path d="M210.33 215 211 307"/><path d="M213.28 215 220 307"/><path d="M216.24 215 229 307"/><path d="M219.20 215 238 307"/><path d="M222.15 215 247 307"/><path d="M225.11 215 256 307"/><path d="M228.07 215 265 307"/><path d="M231.02 215 274 307"/><path d="M233.98 215 283 307"/><path d="M236.93 215 292 307"/><path d="M239.89 215 301 307"/><path d="M242.85 215 310 307"/><path d="M245.80 215 319 307"/><path d="M248.76 215 328 307"/><path d="M251.72 215 337 307"/><path d="M254.67 215 346 307"/><path d="M257.63 215 355 307"/><path d="M260.58 215 364 307"/><path d="M263.54 215 373 307"/><path d="M40 215.51H380" stroke-dasharray=".7 2.6"/><path d="M40 216.76H380" stroke-dasharray=".7 2.6"/><path d="M40 218.66H380" stroke-dasharray=".7 2.6"/><path d="M40 221.14H380" stroke-dasharray=".7 2.6"/><path d="M40 224.17H380" stroke-dasharray=".7 2.6"/><path d="M40 227.73H380" stroke-dasharray=".7 2.6"/><path d="M40 231.81H380" stroke-dasharray=".7 2.6"/><path d="M40 236.37H380" stroke-dasharray=".7 2.6"/><path d="M40 241.42H380" stroke-dasharray=".7 2.6"/><path d="M40 246.94H380" stroke-dasharray=".7 2.6"/><path d="M40 252.91H380" stroke-dasharray=".7 2.6"/><path d="M40 259.34H380" stroke-dasharray=".7 2.6"/><path d="M40 266.21H380" stroke-dasharray=".7 2.6"/><path d="M40 273.52H380" stroke-dasharray=".7 2.6"/><path d="M40 281.26H380" stroke-dasharray=".7 2.6"/><path d="M40 289.42H380" stroke-dasharray=".7 2.6"/><path d="M40 298.01H380" stroke-dasharray=".7 2.6"/><path d="M40 307.00H380" stroke-dasharray=".7 2.6"/></g>
+            <path d="M44 307 156 215M264 215 376 307" stroke="url(#road-edge)" stroke-width="1.4" fill="none"/>
+            <path d="M44 307H376L380 310H40Z" fill="#087783"/>
+            <path d="M44 307H376" stroke="#d3fffc" stroke-width="1.3"/>
+            <ellipse cx="210" cy="300" rx="28" ry="3" fill="#00454e" opacity=".55"/>
+          </g><g id="dial-ticks"></g>
+          <path id="needle" d="M207 150 210 25 213 150 210 143Z" class="needle" transform="rotate(-128 210 190)"/>
+        </svg>
+        <div class="dial-readout"><span class="speed-unit">km/h</span><span id="speed" class="speed-number">—</span><span id="speed-source" class="speed-source">GPS 未连接</span></div>
+      </div>
+      <div class="calendar-panel"><span id="cluster-weekday">—</span><span class="calendar-divider"></span><time id="cluster-date">—</time></div>
+      <div class="cluster-brand" aria-hidden="true"><span class="brand-stripes"><i></i><i></i><i></i><i></i></span>TSL</div>
+      <div class="cluster-bottom"><div class="rpm-reading"><span class="reading-label">转速</span><span id="rpm">0.0</span><span class="reading-unit">×1000 rpm</span></div><div class="gear-reading"><span id="gear">N</span><span id="gear-label" class="reading-unit">自由轰油</span></div></div>
+    </div>
+    <p id="status-message" class="status-message" role="status">选个引擎，点火。剩下的，交给右脚。</p>
+  </section>
+
+  <section class="controls" aria-label="引擎控制">
+    <div class="engine-selector" role="group" aria-label="选择引擎"><button class="engine-option" data-engine="v6" aria-pressed="false"><span class="engine-name">V6</span><span class="engine-description">轻快 · 干脆</span></button><button class="engine-option selected" data-engine="v8" aria-pressed="true"><span class="engine-name">V8</span><span class="engine-description">低沉 · 浑厚</span></button><button class="engine-option" data-engine="v10" aria-pressed="false"><span class="engine-name">V10</span><span class="engine-description">锐利 · 绵密</span></button><button class="engine-option" data-engine="v12" aria-pressed="false"><span class="engine-name">V12</span><span class="engine-description">高亢 · 细腻</span></button></div>
+    <button id="ignition" class="ignition"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2v10m-5-7a8.5 8.5 0 1 0 10 0" stroke-linecap="round"/></svg><span id="ignition-label">点火</span></button>
+  </section>
+
+  <button id="pedal" class="pedal" disabled aria-label="按住油门加速"><span class="pedal-copy"><span id="pedal-title">按住油门</span><span id="pedal-hint">先点火，再按住这里或空格键</span></span><span class="pedal-symbol" aria-hidden="true"><i></i><i></i><i></i></span><span class="pedal-fill" aria-hidden="true"></span></button>
+
+  <footer class="footer"><label class="volume-control"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M11 4 6 8H2v8h4l5 4V4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only">音量</span><input id="volume" type="range" min="0" max="100" value="35" aria-label="音量"><output id="volume-value" for="volume">35%</output></label><span class="footer-note">无需账号，打开就玩。</span><button id="about-toggle" class="text-button" aria-expanded="false" aria-controls="about">使用说明</button></footer>
+  <section id="about" class="about" hidden><h2>只管听，好好开。</h2><p>先停车设置，再出发。GPS 模式以浏览器提供的车速估算转速与挡位，不连接车辆系统，也不替代车载仪表。精确定位仅在当前页面处理，不保存。气温查询仅向 Open-Meteo 发送保留一位小数的城市级坐标；当前位置变化时会刷新，同一区域每 15 分钟更新。</p><p>首次点火会解锁浏览器音频；请调高设备媒体音量。离开页面会停止声浪。GPS 不可用时可切回手动试听。Tesla 不同车型和软件版本的浏览器能力可能不同。</p><p>四款声浪为合成配置，并非特定车型录音。声音核心来自 <a href="https://github.com/ange-yaghi/engine-sim" target="_blank" rel="noopener noreferrer">Engine Simulator</a> 的 <a href="https://github.com/corychainsman/torque-zero" target="_blank" rel="noopener noreferrer">Torque Zero 浏览器移植</a>，保留 <a href="./wasm/LICENSE-engine-sim.txt">MIT 许可证</a>。界面视觉参考用户提供的 Mercedes-AMG GT Black Series 实拍仪表。左侧温度来自 <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a> 的当地当前气温数据，未定位或查询失败时显示“—°C”；里程沿用参考图读数，不连接车辆系统；右侧为设备本地时间。中央车速来自浏览器 GPS，缺少有效速度时显示“—”。本项目与 Mercedes-Benz、AMG 及 Tesla 无隶属关系。</p></section>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
