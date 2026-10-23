@@ -1,12 +1,14 @@
+import { createCabinAudio } from './cabin-audio.js?v=1.5.0';
+
 const $ = id => document.getElementById(id);
 const presets = {
-  v6: { idle: 850, redline: 7200, parameters: [6, 183, 10.8, 32, 28, .5, .07, .85, 20, .95] },
-  v8: { idle: 750, redline: 6500, parameters: [8, 350, 10.5, 48, 35, .64, .08, .8, 18, .9] },
-  v10: { idle: 900, redline: 8500, parameters: [10, 317, 12, 28, 23, .42, .05, .72, 22, 1.02] },
-  v12: { idle: 950, redline: 9000, parameters: [12, 396, 12.5, 22, 18, .35, .04, .67, 24, 1.05] },
+  v6: { idle: 850, redline: 7200, parameters: [6, 183, 10.8, 38, 25, .43, .025, .85, 20, .95] },
+  v8: { idle: 750, redline: 6500, parameters: [8, 350, 10.5, 56, 30, .52, .03, .8, 18, .9] },
+  v10: { idle: 900, redline: 8500, parameters: [10, 317, 12, 32, 21, .36, .02, .72, 22, 1.02] },
+  v12: { idle: 950, redline: 9000, parameters: [12, 396, 12.5, 28, 18, .3, .018, .67, 24, 1.05] },
 };
 let selected = 'v8', running = false, loading = false, pressed = false, mode = 'manual';
-let context, worklet, gain, compressor, watchId, gpsEpoch = 0, gpsSpeed = null, lastFix = 0;
+let context, worklet, gain, cabin, watchId, gpsEpoch = 0, gpsSpeed = null, lastFix = 0;
 let rpm = 0, throttle = 0, gear = 1, previousSpeed = 0, lastFrame = performance.now(), lastUi = 0;
 const ratios = [3.5, 2.3, 1.6, 1.2, .95, .78];
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -143,7 +145,7 @@ function disposeAudio() {
     worklet.onprocessorerror = null;
     worklet.disconnect();
   }
-  context = worklet = gain = compressor = undefined;
+  context = worklet = gain = cabin = undefined;
   return oldContext?.state !== 'closed' ? oldContext?.close().catch(() => {}) : Promise.resolve();
 }
 
@@ -189,9 +191,7 @@ async function prepareAudio() {
   // Resume inside the tap before awaiting downloads; mobile audio requires the gesture.
   const resumed = context.resume();
   gain = context.createGain(); gain.gain.value = 0;
-  compressor = context.createDynamicsCompressor();
-  compressor.threshold.value = -12; compressor.knee.value = 16;
-  compressor.ratio.value = 4; compressor.attack.value = .003; compressor.release.value = .12;
+  cabin = createCabinAudio(context);
   const abort = new AbortController();
   const timeout = setTimeout(() => abort.abort(), 15000);
   let bytes;
@@ -201,7 +201,7 @@ async function prepareAudio() {
     bytes = await response.arrayBuffer();
   } finally { clearTimeout(timeout); }
   const module = await WebAssembly.compile(bytes);
-  await context.audioWorklet.addModule('./wasm/processor.js');
+  await context.audioWorklet.addModule('./wasm/processor.js?v=1.5.0');
   worklet = new AudioWorkletNode(context, 'rev-engine', { numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [1], processorOptions: { module } });
   await new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('audio-timeout')), 8000);
@@ -211,7 +211,8 @@ async function prepareAudio() {
     };
     worklet.onprocessorerror = () => { clearTimeout(timer); stop('声音引擎已停止，请重新点火。'); void disposeAudio(); reject(new Error('processor')); };
   });
-  worklet.connect(compressor).connect(gain).connect(context.destination);
+  worklet.connect(cabin.input);
+  cabin.output.connect(gain).connect(context.destination);
   await resumed;
 }
 
@@ -309,6 +310,7 @@ function tick(now) {
     } else target = pressed ? preset.redline * .98 : preset.idle;
     throttle += (input - throttle) * (1 - Math.exp(-dt * 6));
     rpm += (target - rpm) * (1 - Math.exp(-dt * (pressed ? 2 : 2.8)));
+    cabin?.update(rpm, preset.redline, throttle);
     worklet?.port.postMessage({ type: 'frame', frame: { rpm, redline: preset.redline, throttle } });
   }
   if (now - lastUi > 50) {
